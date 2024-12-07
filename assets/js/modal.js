@@ -2,7 +2,7 @@ const units = {
     infanterie: {
         title: 'Infanteriedivisionen',
         subtitle: 'Dywizje piechoty',
-        description: 'Infanteriedivisionen stanowiły podstawowy element sił lądowych Wehrmachtu podczas II wojny światowej. Były to standardowe jednostki bojowe składające się z około 15 000 żołnierzy, podzielonych na pułki, batalony i kompanie.',
+        description: 'Infanteriedivisionen były podstawowymi jednostkami piechoty Wehrmachtu podczas II wojny światowej. Składały się głównie z oddziałów piechoty, które były kluczowe w walkach lądowych, zarówno w ofensywach, jak i obronie.',
         image: './assets/img/piechota-2.webp'
     },
     aufklarung: {
@@ -20,13 +20,14 @@ const units = {
     volkssturm: {
         title: 'Volkssturm',
         subtitle: 'Ostatnia obrona Niemiec',
-        description: 'Pospolite ruszenie utworzone pod koniec II wojny światowej, składające się z mężczyzn między 16 a 60 rokiem życia, którzy nie służyli wcześniej w wojsku.',
+        description: 'Formacja zbrojna utworzona pod koniec II wojny światowej, składająca się z mężczyzn w wieku od 16 do 60 lat, którzy nie odbyli wcześniej służby wojskowej. Była to ostatnia próba obrony Niemiec przed nadciągającymi wojskami alianckimi.',
         image: './assets/img/volkssturm.webp'
     }
 };
 
 
 const modal = document.getElementById('unit-modal');
+const backdrop = modal.querySelector('.black-overlay');
 const modalContent = modal.querySelector('.modal-content');
 const modalClose = document.getElementById('modal-close');
 
@@ -39,26 +40,20 @@ document.querySelectorAll('.unit-card').forEach(card => {
 
 function openModal(unitKey) {
     const unit = units[unitKey];
-    const modal = document.getElementById('unit-modal');
-    
     document.getElementById('modal-unit-title').textContent = unit.title;
     document.getElementById('modal-unit-subtitle').textContent = unit.subtitle;
     document.getElementById('modal-unit-description').textContent = unit.description;
     document.getElementById('modal-unit-image').src = unit.image;
-    
     document.body.style.overflow = 'hidden';
-    
     modal.classList.remove('invisible');
-
     anime({
         targets: modal,
         opacity: [0, 1],
         duration: 300,
         easing: 'easeOutQuad'
     });
-    
     anime({
-        targets: modal.querySelector('.modal-content'),
+        targets: modalContent,
         scale: [0.8, 1],
         opacity: [0, 1],
         duration: 300,
@@ -67,17 +62,14 @@ function openModal(unitKey) {
 }
 
 function closeModal() {
-    const modal = document.getElementById('unit-modal');
     document.body.style.overflow = 'auto';
-    
     anime({
-        targets: modal.querySelector('.modal-content'),
+        targets: modalContent,
         scale: [1, 0.8],
         opacity: [1, 0],
         duration: 300,
         easing: 'easeOutQuad'
     });
-    
     anime({
         targets: modal,
         opacity: [1, 0],
@@ -89,13 +81,7 @@ function closeModal() {
     });
 }
 
-
-modal.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-
+backdrop.addEventListener('click', closeModal);
 modalClose.addEventListener('click', closeModal);
 
 document.addEventListener('keydown', (event) => {
