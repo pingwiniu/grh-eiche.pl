@@ -3,25 +3,25 @@ const units = {
         title: 'Infanteriedivisionen',
         subtitle: 'Dywizje piechoty',
         description: 'Infanteriedivisionen stanowiły podstawowy element sił lądowych Wehrmachtu podczas II wojny światowej. Były to standardowe jednostki bojowe składające się z około 15 000 żołnierzy, podzielonych na pułki, batalony i kompanie.',
-        image: './assets/img/hero.jpg'
+        image: './assets/img/piechota.png'
     },
     aufklarung: {
         title: 'Aufklärungsabteilung',
         subtitle: 'Dywizje zwiadu',
         description: 'Wyspecjalizowane jednostki zwiadu i rozpoznania w strukturach Wehrmachtu. Ich kluczowym zadaniem było zbieranie informacji wywiadowczych o przeciwniku, terenie oraz sytuacji strategicznej.',
-        image: './assets/img/hero.jpg'
+        image: './assets/img/rowery.jpg'
     },
     roa: {
         title: 'Russische Befreiungsarmee',
         subtitle: 'Rosyjska Armia Wyzwoleńcza',
         description: 'Rosyjska Armia Wyzwoleńcza złożona z radzieckich jeńców wojennych i ochotników, którzy walczyli po stronie Niemiec przeciwko Związkowi Radzieckiemu.',
-        image: './assets/img/hero.jpg'
+        image: './assets/img/roa.png'
     },
     volkssturm: {
         title: 'Volkssturm',
         subtitle: 'Ostatnia obrona Niemiec',
         description: 'Pospolite ruszenie utworzone pod koniec II wojny światowej, składające się z mężczyzn między 16 a 60 rokiem życia, którzy nie służyli wcześniej w wojsku.',
-        image: './assets/img/hero.jpg'
+        image: './assets/img/volkssturm.png'
     }
 };
 
