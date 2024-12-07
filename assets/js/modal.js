@@ -3,7 +3,7 @@ const units = {
         title: 'Infanteriedivisionen',
         subtitle: 'Dywizje piechoty',
         description: 'Infanteriedivisionen stanowiły podstawowy element sił lądowych Wehrmachtu podczas II wojny światowej. Były to standardowe jednostki bojowe składające się z około 15 000 żołnierzy, podzielonych na pułki, batalony i kompanie.',
-        image: './assets/img/piechota.webp'
+        image: './assets/img/piechota-2.webp'
     },
     aufklarung: {
         title: 'Aufklärungsabteilung',
