@@ -39,18 +39,16 @@ document.querySelectorAll('.unit-card').forEach(card => {
 
 function openModal(unitKey) {
     const unit = units[unitKey];
+    const modal = document.getElementById('unit-modal');
     
     document.getElementById('modal-unit-title').textContent = unit.title;
     document.getElementById('modal-unit-subtitle').textContent = unit.subtitle;
     document.getElementById('modal-unit-description').textContent = unit.description;
     document.getElementById('modal-unit-image').src = unit.image;
-
-
-    document.body.style.overflow = 'hidden';
-
-
-    modal.classList.remove('hidden');
     
+    document.body.style.overflow = 'hidden';
+    
+    modal.classList.remove('invisible');
 
     anime({
         targets: modal,
@@ -58,9 +56,9 @@ function openModal(unitKey) {
         duration: 300,
         easing: 'easeOutQuad'
     });
-
+    
     anime({
-        targets: modalContent,
+        targets: modal.querySelector('.modal-content'),
         scale: [0.8, 1],
         opacity: [0, 1],
         duration: 300,
@@ -69,26 +67,28 @@ function openModal(unitKey) {
 }
 
 function closeModal() {
+    const modal = document.getElementById('unit-modal');
     document.body.style.overflow = 'auto';
-
+    
     anime({
-        targets: modalContent,
+        targets: modal.querySelector('.modal-content'),
         scale: [1, 0.8],
         opacity: [1, 0],
         duration: 300,
         easing: 'easeOutQuad'
     });
-
+    
     anime({
         targets: modal,
         opacity: [1, 0],
         duration: 300,
         easing: 'easeOutQuad',
         complete: () => {
-            modal.classList.add('hidden');
+            modal.classList.add('invisible');
         }
     });
 }
+
 
 modal.addEventListener('click', (event) => {
     if (event.target === modal) {
