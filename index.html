@@ -383,7 +383,7 @@
                     </div>
                 </div>
                 <div>
-                    <form class="space-y-6">
+                    <form class="space-y-6" id="contactForm">
                         <div>
                             <label class="block inter mb-2">Imię i nazwisko</label>
                             <input type="text" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white" required>
@@ -437,29 +437,7 @@
 
     <script src="./assets/js/main.js"></script>
     <script src="./assets/js/modal.js"></script>
-    <script>
-
-        $(document).ready(function() {
-            $('#contactForm').on('submit', function(e) {
-                e.preventDefault();
-
-                var formData = $(this).serialize();
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'https://backend.grh-eiche.pl/',
-                    data: formData,
-                    success: function(response) {
-                        alert(response);
-                    },
-                    error: function() {
-                        alert('Wystąpił problem podczas wysyłania wiadomości.');
-                    }
-                });
-            });
-        });
-
-    </script>
+    <script src="./assets/js/mail.js"></script>
     
 </body>
 </html>
