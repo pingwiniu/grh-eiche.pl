@@ -179,12 +179,6 @@
             justify-content: center;
         }
 
-        .social-icon:hover {
-            transform: translateY(-5px) scale(1.1);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-        }
-
         .section-fade {
             opacity: 0;
             transform: translateY(30px);
@@ -250,6 +244,11 @@
             background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
         }
 
+        .preloader-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
     </style>
     <script>
         tailwind.config = {
@@ -263,7 +262,52 @@
             }
         }
     </script>
+
+    <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const preloader = document.getElementById('preloader');
+        const logo = document.querySelector('.logo');
+
+        const spinAnimation = anime({
+            targets: '.logo',
+            rotateY: '1500',
+            duration: 2000,
+            easing: 'linear',
+            loop: true
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                spinAnimation.pause();
+
+                anime.timeline({
+                    duration: 800,
+                    easing: 'easeInOutExpo',
+                    complete: () => preloader.remove()
+                })
+                .add({
+                    targets: '.logo',
+                    scale: [1, 0],
+                    opacity: [1, 0]
+                })
+                .add({
+                    targets: '#preloader',
+                    backgroundColor: 'rgba(28, 25, 23, 0)',
+                    duration: 600
+                }, '-=600');
+            }, 500);
+        });
+    });
+
+    </script>
 </head>
+
+<div id="preloader" class="fixed inset-0 bg-stone-900 z-[9999] flex items-center justify-center transition-opacity duration-500">
+    <div class="relative">
+        <img src="./assets/img/logo-bg.png" alt="Logo" class="logo h-24 w-auto opacity-40">
+    </div>
+</div>
 
 <body class="bg-stone-100">
     <nav class="fixed w-full z-50 transition-all duration-300">
@@ -329,8 +373,8 @@
                     którzy ożywiają karty historii II wojny światowej.
                 </p>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-                    <a href="#join" class="button-primary bg-white text-stone-900 inter px-8 py-4 rounded-full text-lg">
-                        Dołącz do nas
+                    <a href="#contact" class="button-primary bg-white text-stone-900 inter px-8 py-4 rounded-full text-lg">
+                        Kontakt
                     </a>
                     <a href="#about" class="button-primary border-2 border-white text-white inter px-8 py-4 rounded-full text-lg">
                         Poznaj nas bliżej
@@ -467,7 +511,7 @@
                 <div class="group relative bg-stone-900/50 rounded-2xl p-6 backdrop-blur-sm border border-stone-800/50 hover:border-stone-700/50 transition-all duration-500">
                     <div class="aspect-[4/3] rounded-xl overflow-hidden mb-8 relative">
                         <img 
-                            src="./assets/img/rekoni-rząd.webp" 
+                            src="./assets/img/rekonstrukcje.webp" 
                             alt="Rekonstrukcje" 
                             class="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110"
                         >
@@ -520,9 +564,8 @@
                             </h3>
                         </div>
                         <p class="text-stone-300 inter leading-relaxed">
-                            Organizujemy warsztaty i lekcje żywej historii, dzieląc się wiedzą 
-                            z młodym pokoleniem i pasjonatami historii. Nasze zajęcia łączą elementy 
-                            teoretyczne z praktycznymi pokazami i interaktywnymi warsztatami.
+                            Chcemy przedstawić realia wojenne z perspektywy prostego, pierwszoliniowego żołnierza, ukazując jego codzienne zmagania, trudności życia na froncie, emocje oraz wyzwania, z jakimi musiał się mierzyć w obliczu działań wojennych.
+                             Poprzez rekonstrukcje i prezentacje pragniemy oddać autentyczny klimat tamtych czasów
                         </p>
                         <ul class="space-y-2 text-stone-400 inter">
                             <li class="flex items-center space-x-2">
@@ -596,7 +639,7 @@
                         </div>
                         <div>
                             <h3 class="text-2xl mb-4">Media społecznościowe</h3>
-                            <a href="https://www.facebook.com/GrhEiche" class="inline-block">
+                            <a href="https://www.facebook.com/GrhEiche" class="text-white hover:text-stone-400 transition-colors" target="_blank">
                                 <i data-lucide="facebook" class="w-8 h-8"></i>
                             </a>
                         </div>
