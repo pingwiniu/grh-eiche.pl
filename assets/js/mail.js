@@ -1,9 +1,10 @@
 $(document).ready(function() {
     $('#contactForm').on('submit', function(e) {
         e.preventDefault();
-
+        
         var formData = $(this).serialize();
-
+        console.log(formData);
+        
         $.ajax({
             type: 'POST',
             url: 'https://backend.grh-eiche.pl/',
