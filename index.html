@@ -24,6 +24,7 @@
         
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
@@ -436,6 +437,29 @@
 
     <script src="./assets/js/main.js"></script>
     <script src="./assets/js/modal.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            $('#contactForm').on('submit', function(e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'https://backend.grh-eiche.pl/',
+                    data: formData,
+                    success: function(response) {
+                        alert(response);
+                    },
+                    error: function() {
+                        alert('Wystąpił problem podczas wysyłania wiadomości.');
+                    }
+                });
+            });
+        });
+
+    </script>
     
 </body>
 </html>
