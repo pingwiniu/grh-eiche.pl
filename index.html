@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRH Eiche</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #1c1917;
+            --border-color: #44403c;
+            --text-light: #d6d3d1;
+            --text-muted: #a8a29e;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cormorant { 
+            font-family: 'Cormorant Garamond', serif; 
+        }
+
+        .inter { 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 1000;
+            transform: translateY(-100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-overlay.active {
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            position: relative;
+            font-size: 1.5rem;
+            color: white;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .menu-overlay.active .menu-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .decorative-image {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-100%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 1rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1100;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-btn:hover {
+            transform: scale(0.97);
+        }
+
+        .menu-btn span {
+            display: block;
+            width: 28px;
+            height: 2px;
+            background: white;
+            margin: 4px 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .menu-social {
+            margin-top: 3rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .menu-overlay.active .menu-social {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+        }
+
+        .social-icon {
+            margin: 0 1rem;
+            padding: 1rem;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .section-fade {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        input, textarea {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        input:focus, textarea:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-image {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .activity-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        .nav-wrapper {
+            background: rgba(28, 25, 23, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-wrapper.scrolled {
+            padding: 0.5rem 0;
+            background: rgba(28, 25, 23, 0.98);
+        }
+
+        .button-primary {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .button-primary:hover::after {
+            transform: translateX(0);
+        }
+
+        .hero-content {
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.4));
+        }
+
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'cormorant': ['Cormorant Garamond', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-stone-100">
+    <nav class="fixed w-full z-50 transition-all duration-300">
+        <div class="nav-wrapper">
+            <div class="container mx-auto px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-6">
+                        <img src="./assets/img/logo-bg.png" alt="GRH Eiche Logo" class="h-16 w-auto">
+                        <div>
+                            <h1 class="cormorant text-3xl text-white">GRH "Eiche"</h1>
+                            <p class="inter text-sm text-white/70">Grupa Rekonstrukcji Historycznej</p>
+                        </div>
+                    </div>
+                    <button id="menuBtn" class="menu-btn">
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay fixed inset-0 bg-gradient-to-b from-stone-900 to-stone-800 backdrop-blur-md z-40 flex items-center justify-center overflow-hidden">
+
+        <div class="decorative-image"><img src="./assets/img/logo-bg.png"></div>
+        
+        <div class="text-center relative w-full h-full flex flex-col justify-center items-center">
+            <div class="grid gap-12">
+                <a href="#about" class="menu-item flex items-center justify-center space-x-4 text-white cormorant text-6xl hover:text-stone-400 transition-all transform">
+                   O nas
+                </a>
+                <a href="#activities" class="menu-item flex items-center justify-center space-x-4 text-white cormorant text-6xl hover:text-stone-400 transition-all transform">
+                    Działalność
+                </a>
+                <a href="#join" class="menu-item flex items-center justify-center space-x-4 text-white cormorant text-6xl hover:text-stone-400 transition-all transform">
+                   Dołącz
+                </a>
+                <a href="#contact" class="menu-item flex items-center justify-center space-x-4 text-white cormorant text-6xl hover:text-stone-400 transition-all transform">
+                   Kontakt
+                </a>
+            </div>
+            <div class="menu-social">
+                <div class="text-white/60 inter text-sm mb-4">Znajdź nas</div>
+                <div class="flex space-x-6">
+                    <a href="https://www.facebook.com/GrhEiche" class="social-icon text-white hover:text-stone-400 transition-colors" target="_blank">
+                        <i data-lucide="facebook" class="w-6 h-6"></i>
+                    </a>
+                    <a href="#" class="social-icon text-white hover:text-stone-400 transition-colors" target="_blank">
+                        <i data-lucide="instagram" class="w-6 h-6"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <header class="relative h-screen">
+        <img src="./assets/img/hero.jpg" 
+             alt="Historical Reenactment" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 hero-content">
+            <div class="h-full flex flex-col justify-center items-start px-8 md:px-16 max-w-6xl mx-auto">
+                <h1 class="cormorant text-7xl md:text-8xl text-white mb-6">Poznaj historię <br/>na nowo</h1>
+                <p class="inter text-xl md:text-2xl text-white/90 mb-12 max-w-2xl">
+                    Grupa Rekonstrukcji Historycznej "Eiche" to zespół pasjonatów, 
+                    którzy ożywiają karty historii II wojny światowej.
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#join" class="button-primary bg-white text-stone-900 inter px-8 py-4 rounded-full text-lg">
+                        Dołącz do nas
+                    </a>
+                    <a href="#about" class="button-primary border-2 border-white text-white inter px-8 py-4 rounded-full text-lg">
+                        Poznaj nas bliżej
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="relative min-h-screen bg-gradient-to-br from-stone-950 to-stone-900 py-24 overflow-hidden">
+        
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute w-[40rem] h-[40rem] rounded-full bg-stone-400 blur-[100px] -top-[20rem] -left-[20rem] rotate-45"></div>
+            <div class="absolute w-[40rem] h-[40rem] rounded-full bg-stone-400 blur-[100px] -bottom-[20rem] -right-[20rem] rotate-12"></div>
+            <div class="absolute w-[30rem] h-[30rem] rounded-full bg-stone-500 blur-[80px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+    
+        <div class="container relative mx-auto px-6 lg:px-8" style="margin-top: -2.8rem;">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                <div class="lg:col-span-7 space-y-16">
+                    <div class="space-y-8">
+                        <h2 class="text-5xl md:text-6xl text-white font-light cormorant">
+                            <span class="block opacity-80">Nasza</span>
+                            <span class="block">Historia</span>
+                        </h2>
+                    
+                        <div class="text-lg text-stone-300 space-y-8 max-w-2xl inter">
+                            <p class="leading-relaxed">
+                                Jako Grupa Rekonstrukcji Historycznej "Eiche" łączymy pasję do historii 
+                                z profesjonalnym podejściem do rekonstrukcji. Nasza działalność koncentruje 
+                                się na odtwarzaniu sylwetek żołnierzy Wehrmachtu, w tym jednostek:
+                            </p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 max-w-4xl w-full mx-auto">
+                                <div class="group bg-stone-800/30 backdrop-blur-sm p-6 rounded-lg hover:bg-stone-800/40 transition-all duration-300 border border-stone-700/30 cursor-pointer unit-card shadow-md hover:shadow-lg" data-unit="infanterie">
+                                    <span class="block text-xl text-stone-200 font-cormorant group-hover:text-white transition-colors font-semibold">Infanteriedivisionen</span>
+                                    <span class="block mt-1 text-sm text-stone-400 font-inter group-hover:text-stone-300">Dywizje piechoty</span>
+                                </div>
+                                <div class="group bg-stone-800/30 backdrop-blur-sm p-6 rounded-lg hover:bg-stone-800/40 transition-all duration-300 border border-stone-700/30 cursor-pointer unit-card shadow-md hover:shadow-lg" data-unit="aufklarung">
+                                    <span class="block text-xl text-stone-200 font-cormorant group-hover:text-white transition-colors font-semibold">Aufklärungsabteilung</span>
+                                    <span class="block mt-1 text-sm text-stone-400 font-inter group-hover:text-stone-300">Dywizje zwiadu</span>
+                                </div>
+                                <div class="group bg-stone-800/30 backdrop-blur-sm p-6 rounded-lg hover:bg-stone-800/40 transition-all duration-300 border border-stone-700/30 cursor-pointer unit-card shadow-md hover:shadow-lg" data-unit="roa">
+                                    <span class="block text-xl text-stone-200 font-cormorant group-hover:text-white transition-colors font-semibold">Russische Befreiungsarmee</span>
+                                    <span class="block mt-1 text-sm text-stone-400 font-inter group-hover:text-stone-300">ROA</span>
+                                </div>
+                                <div class="group bg-stone-800/30 backdrop-blur-sm p-6 rounded-lg hover:bg-stone-800/40 transition-all duration-300 border border-stone-700/30 cursor-pointer unit-card shadow-md hover:shadow-lg" data-unit="volkssturm">
+                                    <span class="block text-xl text-stone-200 font-cormorant group-hover:text-white transition-colors font-semibold">Volkssturm</span>
+                                    <span class="block mt-1 text-sm text-stone-400 font-inter group-hover:text-stone-300"></span>
+                                </div>
+                            </div>
+                        
+                            <div id="unit-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center overflow-hidden opacity-0 p-4">
+                                <div class="modal-content relative bg-stone-900 rounded-2xl w-full max-w-2xl mx-auto max-h-[90vh] overflow-y-auto transform transition-all duration-300 shadow-2xl border border-stone-700">
+                                    <button id="modal-close" class="absolute top-4 right-4 z-10 bg-stone-700/50 hover:bg-stone-700/75 p-2 rounded-full transition-colors group">
+                                        <i data-lucide="x" class="text-white" size="24"></i>
+                                    </button>
+                                    <div class="relative">
+                                        <img id="modal-unit-image" class="w-full h-64 object-cover rounded-t-2xl brightness-75" src="" alt="Unit Image">
+                                        <div class="absolute bottom-4 left-4 bg-black/50 px-3 py-1 rounded-full">
+                                            <span id="modal-unit-subtitle" class="text-sm text-stone-200 font-inter"></span>
+                                        </div>
+                                    </div>
+                                    <div class="p-6 space-y-4">
+                                        <h2 id="modal-unit-title" class="text-3xl font-bold text-white font-cormorant mb-2 leading-tight"></h2>
+                                        <p id="modal-unit-description" class="text-stone-300 font-inter leading-relaxed text-base"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="relative pl-8 border-l-2 border-stone-700 group hover:border-stone-500 transition-colors">
+                            <span class="block text-4xl lg:text-5xl text-white mb-2 group-hover:text-stone-300 transition-colors inter">100+</span>
+                            <span class="text-sm text-stone-400 uppercase tracking-wider inter group-hover:text-stone-300 inter">Inscenizacji</span>
+                        </div>
+                        <div class="relative pl-8 border-l-2 border-stone-700 group hover:border-stone-500 transition-colors">
+                            <span class="block text-4xl lg:text-5xl text-white mb-2 group-hover:text-stone-300 transition-colors inter">7+</span>
+                            <span class="text-sm text-stone-400 uppercase tracking-wider inter group-hover:text-stone-300 inter">Lat doświadczenia</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="lg:col-span-5 space-y-8 relative">
+                    <div class="absolute -left-12 top-1/2 -translate-y-1/2 w-32 h-px bg-gradient-to-r from-stone-700 to-transparent hidden lg:block"></div>
+                    
+                    <div class="group relative aspect-[4/3] rounded-xl overflow-hidden lg:translate-x-12">
+                        <img 
+                            src="./assets/img/rowery.jpg" 
+                            alt="Rekoni w lesie" 
+                            class="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                    </div>
+                    
+                    <div class="group relative aspect-[4/3] rounded-xl overflow-hidden lg:-translate-x-12">
+                        <img 
+                            src="./assets/img/zima-2.jpg" 
+                            alt="Rekoni z mapą" 
+                            class="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-stone-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="activities" class="relative min-h-screen bg-gradient-to-br from-stone-950 to-stone-900 py-24 overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute w-[40rem] h-[40rem] rounded-full bg-stone-400 blur-[100px] -top-[20rem] -left-[20rem] rotate-45"></div>
+            <div class="absolute w-[40rem] h-[40rem] rounded-full bg-stone-400 blur-[100px] -bottom-[20rem] -right-[20rem] rotate-12"></div>
+            <div class="absolute w-[30rem] h-[30rem] rounded-full bg-stone-500 blur-[80px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+    
+        <div class="container relative mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl text-white font-light cormorant mb-4">
+                    <span class="block opacity-80">Nasza</span>
+                    <span class="block">Działalność</span>
+                </h2>
+            </div>
+    
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+                <div class="group relative">
+                    <div class="aspect-[4/3] rounded-xl overflow-hidden mb-8">
+                        <img 
+                            src="./assets/img/rekoni-rząd.jpg" 
+                            alt="Rekonstrukcje" 
+                            class="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110"
+                        >
+                        <div class="absolute inset-0"></div>
+                    </div>
+    
+                    <div class="space-y-4">
+                        <h3 class="text-2xl text-white cormorant group-hover:text-stone-300 transition-colors">
+                            Rekonstrukcje
+                        </h3>
+                        <p class="text-stone-300 inter leading-relaxed">
+                            Bierzemy udział w największych inscenizacjach historycznych w Polsce i Europie, 
+                            odtwarzając autentyczne wydarzenia z okresu II wojny światowej.
+                        </p>
+                    </div>
+                </div>
+    
+                <div class="group relative">
+                    <div class="aspect-[4/3] rounded-xl overflow-hidden mb-8">
+                        <img 
+                            src="./assets/img/rekoni-chatka.jpg" 
+                            alt="Edukacja" 
+                            class="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110"
+                        >
+                        <div class="absolute inset-0"></div>
+                    </div>
+    
+                    <div class="space-y-4">
+                        <h3 class="text-2xl text-white cormorant group-hover:text-stone-300 transition-colors">
+                            Edukacja
+                        </h3>
+                        <p class="text-stone-300 inter leading-relaxed">
+                            Organizujemy warsztaty i lekcje żywej historii, dzieląc się wiedzą 
+                            z młodym pokoleniem i pasjonatami historii.
+                        </p>
+                    </div>
+                </div>
+    
+                <div class="group relative">
+                    <div class="aspect-[4/3] rounded-xl overflow-hidden mb-8">
+                        <img 
+                            src="./assets/img/motor-2.jpg" 
+                            alt="Kolekcjonerstwo" 
+                            class="w-full h-full object-cover transform transition-all duration-700 group-hover:scale-110"
+                        >
+                        <div class="absolute inset-0"></div>
+                    </div>
+    
+                    <div class="space-y-4">
+                        <h3 class="text-2xl text-white cormorant group-hover:text-stone-300 transition-colors">
+                            Kolekcjonerstwo
+                        </h3>
+                        <p class="text-stone-300 inter leading-relaxed">
+                            Gromadzimy i konserwujemy autentyczne przedmioty historyczne, 
+                            dbając o zachowanie materialnego dziedzictwa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="join" class="relative min-h-screen bg-gradient-to-br from-stone-950 to-stone-900 py-24 overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute w-[40rem] h-[40rem] rounded-full bg-stone-400 blur-[100px] -top-[20rem] -left-[20rem] rotate-45"></div>
+            <div class="absolute w-[40rem] h-[40rem] rounded-full bg-stone-400 blur-[100px] -bottom-[20rem] -right-[20rem] rotate-12"></div>
+            <div class="absolute w-[30rem] h-[30rem] rounded-full bg-stone-500 blur-[80px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+    
+        <div class="container relative mx-auto px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl md:text-6xl text-white font-light cormorant mb-4">
+                        <span class="block opacity-80">Dołącz</span>
+                        <span class="block">do nas</span>
+                    </h2>
+                    <p class="inter text-lg text-stone-300 max-w-xl mx-auto">
+                        Zostań częścią naszej historycznej społeczności
+                    </p>
+                </div>
+    
+                <form class="space-y-8 bg-stone-800/30 backdrop-blur-sm p-10 rounded-xl border border-stone-700/30">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block inter text-stone-200 mb-3 group-hover:text-white transition-colors">Imię</label>
+                            <input type="text" 
+                                   class="w-full p-4 rounded-lg bg-stone-900/50 border border-stone-700 text-white 
+                                          
+                                          placeholder-stone-500" 
+                                   placeholder="Wpisz swoje imię"
+                                   required>
+                        </div>
+                        <div>
+                            <label class="block inter text-stone-200 mb-3 group-hover:text-white transition-colors">Nazwisko</label>
+                            <input type="text" 
+                                   class="w-full p-4 rounded-lg bg-stone-900/50 border border-stone-700 text-white 
+                                          
+                                          placeholder-stone-500" 
+                                   placeholder="Wpisz swoje nazwisko"
+                                   required>
+                        </div>
+                    </div>
+    
+                    <div>
+                        <label class="block inter text-stone-200 mb-3 group-hover:text-white transition-colors">Telefon</label>
+                        <input type="tel" 
+                               class="w-full p-4 rounded-lg bg-stone-900/50 border border-stone-700 text-white 
+                                      
+                                      placeholder-stone-500" 
+                               placeholder="Twój numer telefonu"
+                               required>
+                    </div>
+    
+                    <div>
+                        <label class="block inter text-stone-200 mb-3 group-hover:text-white transition-colors">
+                            Dlaczego chcesz do nas dołączyć?
+                        </label>
+                        <textarea 
+                            class="w-full p-4 rounded-lg bg-stone-900/50 border border-stone-700 text-white 
+                                   
+                                   placeholder-stone-500" 
+                            rows="4" 
+                            placeholder="Opowiedz nam coś więcej o sobie"
+                            required></textarea>
+                    </div>
+    
+                    <button type="submit" 
+                            class="w-full bg-white text-stone-900 inter py-4 px-6 rounded-lg text-lg 
+                                   hover:bg-stone-100 transition-all duration-300 
+                                   focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-opacity-50">
+                        Wyślij zgłoszenie
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 bg-stone-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
+                <div>
+                    <h2 class="cormorant text-5xl mb-8">Skontaktuj się z nami</h2>
+                    <div class="inter space-y-6">
+                        <div>
+                            <h3 class="text-2xl mb-4">Dane kontaktowe</h3>
+                            <p class="mb-2">Email: kontakt@grh-eiche.pl</p>
+                            <p class="mb-2">Tel: +48 123 456 789</p>
+                            <p>Województwo Wielkopolskie, Polska</p>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl mb-4">Media społecznościowe</h3>
+                            <a href="https://www.facebook.com/GrhEiche" class="inline-block">
+                                <i data-lucide="facebook" class="w-8 h-8"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <form class="space-y-6">
+                        <div>
+                            <label class="block inter mb-2">Imię i nazwisko</label>
+                            <input type="text" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white" required>
+                        </div>
+                        <div>
+                            <label class="block inter mb-2">Email</label>
+                            <input type="email" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white" required>
+                        </div>
+                        <div>
+                            <label class="block inter mb-2">Wiadomość</label>
+                            <textarea class="w-full p-3 rounded bg-white/10 border border-white/20 text-white" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="bg-white text-stone-900 inter py-3 px-6 rounded hover:bg-stone-200 transition-colors">
+                            Wyślij wiadomość
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-stone-900 text-white py-16 border-t border-white/10">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
+                <div>
+                    <img src="./assets/img/logo-bg.png" alt="GRH Eiche" class="h-16 w-auto mb-4">
+                    <p class="inter text-sm text-stone-400">Grupa Rekonstrukcji Historycznej "Eiche"</p>
+                </div>
+                <div>
+                    <h4 class="cormorant text-xl mb-4">Nawigacja</h4>
+                    <ul class="inter space-y-2 text-stone-400">
+                        <li><a href="#about" class="hover:text-white transition-colors">O nas</a></li>
+                        <li><a href="#activities" class="hover:text-white transition-colors">Działalność</a></li>
+                        <li><a href="#join" class="hover:text-white transition-colors">Dołącz</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="cormorant text-xl mb-4">Kontakt</h4>
+                    <ul class="inter space-y-2 text-stone-400">
+                        <li>kontakt@grh-eiche.pl</li>
+                        <li>+48 123 456 789</li>
+                        <li>Województwo Wielkopolskie</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-16 pt-8 border-t border-white/10 text-center inter text-sm text-stone-400">
+                <p>&copy; 2024 GRH Eiche. Wszelkie prawa zastrzeżone.</p>
+                <p class="mt-2">Design & wykonanie: Julian Zientkowski</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./assets/js/main.js"></script>
+    <script src="./assets/js/modal.js"></script>
+    
+</body>
+</html>
