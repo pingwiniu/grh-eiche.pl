@@ -1,4 +1,10 @@
 lucide.createIcons();
+
+const currentYearElement = document.getElementById('current-year');
+
+if (currentYearElement) {
+    currentYearElement.textContent = new Date().getFullYear();
+}
     
 const menuBtn = document.getElementById('menuBtn');
 const menuOverlay = document.getElementById('menuOverlay');
